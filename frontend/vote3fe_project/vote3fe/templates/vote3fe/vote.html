@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1>Vote</h1>
+
+<h2>{{ election.name }}</h2>
+<p>{{election.notes}}</p>
+<form action="{% url 'vote3fe:vote' votecode_param election.id %}" method="post">
+{% csrf_token %}
+<ul>
+  {% for candidate in candidates %}
+  <li>{{ candidate.name }}: <input type="number" name="candidate-{{candidate.id}}"></input></li>
+  {% endfor %}
+</ul>
+<p>You only get one submission. The system does not check your vote at
+all. Anything that is not a number is treated as empty.</p>
+<input type="submit" value="Vote" />
+</post>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Sep  6 21:29:36 EST 2014 <!-- hhmts end -->
+</body> </html>
