@@ -18,6 +18,12 @@ vagrant up
 # it takes a while. Have a coffee or 3.
 vagrant ssh
 cd /vagrant
+# set yourself up a superuser
+cd frontend
+source env/bin/activate
+cd vote3fe_project
+python mange.py createuseruser
+# answer the questions
 <do stuff>
 ```
 
@@ -29,6 +35,8 @@ You have a number of options to deal with this:
 
  * Bridged mode
  * Deploy on the magic internets.
+
+If you deploy on the magic internets, and you use a reverse proxy like nginx (which you probably should!) you'll need to change the `@ratelimit` line in `frontend/vote3fe_project/vote3fe/views.py` to ratelimit against something more appropriate.
 
 # How does it work? #
 Vote3 is divided up into two parts, a front end and a back end. Both are pluggable/replaceable/interchangeable.
@@ -49,7 +57,7 @@ Voters then take the voting codes and use them to vote. The voting code:
 
 Voting codes can also be created before the candidate list is finalised, which is convenient if you allow nominations on the day.
 
-To provide brute-force resistance, a voting code is 128 bits (16 bytes) of true randomness. This is base64 encoded (to 24 bytes). Ratelimiting is also enforced.
+To provide brute-force resistance, a voting code is 128 bits (16 bytes) of true randomness. This is base64 encoded (to 24 bytes, but it always ends with two equals signs, so they're removed, leaving 22 bytes). Ratelimiting is also enforced.
 
 The front end deliberately does not verify if votes are formal. There are two reasons for this:
 
@@ -108,13 +116,13 @@ This arrangement does - in theory - allow you to vote for a candidate that isn't
 
 The following models are *only used by the current front end*; a new front end is not required to implement them, and the backend must not use them. They are written down here because they were written as part of the design process and I see no good reason to remove them. For clarity, elections have many vote codes, and a votecode can authorize voting in mutiple elections - e.g. Pres/VP/Sec/Treas/Committee.
 
- * Votecode
-     * Votecode ID
-     * Votecode (as described above, unique)
+ * VoteCode
+     * VoteCode ID
+     * VoteCode (as described above, unique)
 
- * ElectionVotecodes
+ * ElectionVoteCodes
      * Election ID
-     * Votecode ID (must be unique together with election ID)
+     * VoteCode ID (must be unique together with election ID)
      * Used? (yes/no)
 
 The use is done at the ElectionVotecode level. Previously I considered having it done at the Votecode level, but it made it hard to ensure that a votecode was only used once per election; basically it required me to trust that users couldn't monkey with their sessions and I wasn't willing to do that.

@@ -9,5 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^vote/', include('vote3fe.urls')),
+    url(r'^vote/', include('vote3fe.urls', namespace='vote3fe')),
 )

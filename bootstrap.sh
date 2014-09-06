@@ -30,3 +30,4 @@ set -u
 pip install -r requirements.txt
 cd vote3fe_project
 python manage.py migrate
+python manage.py createcachetable

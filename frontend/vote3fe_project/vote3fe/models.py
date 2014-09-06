@@ -44,20 +44,20 @@ class Preference(models.Model):
 
 
 # our use only
-class Votecode(models.Model):
-    def generate_votecode():
-        return b64encode(os.urandom(16))
+class VoteCode(models.Model):
+    def generate_vote_code():
+        return b64encode(os.urandom(16))[0:22]
 
-    votecode = models.CharField(max_length=24, unique=True,
-                                default=generate_votecode)
-    elections = models.ManyToManyField(Election, through='ElectionVotecode') 
+    vote_code = models.CharField(max_length=22, unique=True,
+                                default=generate_vote_code)
+    elections = models.ManyToManyField(Election, through='ElectionVoteCode') 
 
 
-class ElectionVotecode(models.Model):
+class ElectionVoteCode(models.Model):
     election = models.ForeignKey(Election)
-    votecode = models.ForeignKey(Votecode)
+    vote_code = models.ForeignKey(VoteCode)
     used = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (('election', 'votecode'),
+        unique_together = (('election', 'vote_code'),
                            )

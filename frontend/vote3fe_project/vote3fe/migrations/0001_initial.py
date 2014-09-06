@@ -14,18 +14,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BallotEntry',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('position', models.IntegerField()),
             ],
             options={
+                'verbose_name_plural': 'Ballot Entries',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Candidate',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('name', models.CharField(max_length=50, unique=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('name', models.CharField(unique=True, max_length=50)),
             ],
             options={
             },
@@ -34,18 +35,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Election',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('notes', models.CharField(max_length=3000)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('name', models.CharField(unique=True, max_length=50)),
+                ('notes', models.CharField(blank=True, max_length=3000)),
+                ('candidates', models.ManyToManyField(through='vote3fe.BallotEntry', to='vote3fe.Candidate')),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='ElectionVotecode',
+            name='ElectionVoteCode',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('used', models.BooleanField(default=False)),
                 ('election', models.ForeignKey(to='vote3fe.Election')),
             ],
@@ -56,7 +58,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Preference',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('preference', models.IntegerField(blank=True, null=True)),
                 ('candidate', models.ForeignKey(to='vote3fe.Candidate')),
             ],
@@ -67,7 +69,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Vote',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('election', models.ForeignKey(to='vote3fe.Election')),
             ],
             options={
@@ -75,11 +77,11 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Votecode',
+            name='VoteCode',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('votecode', models.CharField(max_length=24, default=vote3fe.models.Votecode.generate_votecode, unique=True)),
-                ('elections', models.ManyToManyField(to='vote3fe.Election', through='vote3fe.ElectionVotecode')),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('vote_code', models.CharField(default=vote3fe.models.VoteCode.generate_vote_code, unique=True, max_length=24)),
+                ('elections', models.ManyToManyField(through='vote3fe.ElectionVoteCode', to='vote3fe.Election')),
             ],
             options={
             },
@@ -97,19 +99,13 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='electionvotecode',
-            name='votecode',
-            field=models.ForeignKey(to='vote3fe.Votecode'),
+            name='vote_code',
+            field=models.ForeignKey(to='vote3fe.VoteCode'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
             name='electionvotecode',
-            unique_together=set([('election', 'votecode')]),
-        ),
-        migrations.AddField(
-            model_name='candidate',
-            name='elections',
-            field=models.ManyToManyField(to='vote3fe.Election', through='vote3fe.BallotEntry'),
-            preserve_default=True,
+            unique_together=set([('election', 'vote_code')]),
         ),
         migrations.AddField(
             model_name='ballotentry',

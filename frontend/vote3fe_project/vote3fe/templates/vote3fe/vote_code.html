@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1></h1>
+
+<ul>
+  {% for election in elections %}
+            <li><a href="{% url 'vote3fe:vote' votecode election.id %}">{{ election.name }}</a></li>
+        {% endfor %}
+</ul>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Sep  6 16:40:15 EST 2014 <!-- hhmts end -->
+</body> </html>

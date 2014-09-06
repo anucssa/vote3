@@ -10,8 +10,8 @@
 {% for election in object_list %}
             <li>{{ election.name }}
   <ul>
-    {% for candidate in election.candidates.all %}
-    <li>{{ candidate.name }}</li>
+    {% for ballotentry in election.ballotentry_set.all %}
+    <li>{{ ballotentry.candidate.name }} (Position: {{ ballotentry.position }})</li>
     {% endfor %}
         </ul>
          </li>
@@ -20,5 +20,5 @@
 
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Sep  6 13:31:53 EST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Sep  6 13:58:07 EST 2014 <!-- hhmts end -->
 </body> </html>

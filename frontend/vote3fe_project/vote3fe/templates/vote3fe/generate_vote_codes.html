@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1></h1>
+
+<form action="{% url 'vote3fe:generate_vote_codes' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Sep  6 15:46:02 EST 2014 <!-- hhmts end -->
+</body> </html>

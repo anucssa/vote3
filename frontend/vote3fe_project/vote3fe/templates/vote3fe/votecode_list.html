@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1>Votecodes</h1>
+
+Distribute these codes.
+
+You may bookmark the link, should you wish to come back to this list later.
+
+<ul>
+{% for votecode in object_list %}
+            <li>{{ votecode.vote_code }}</li>
+        {% endfor %}
+</ul>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Sep  6 16:02:02 EST 2014 <!-- hhmts end -->
+</body> </html>
