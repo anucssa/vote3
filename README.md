@@ -74,12 +74,12 @@ A rough outline to the schema is as follows.
 
  * Election
      * Election ID
-     * Election Name
+     * Election Name, must be unique
      * Election Notes (information that is displayed to voters. Does *not* enforce anything internally.)
 
  * Candiate
      * Candidate ID
-     * Candidate Name
+     * Candidate Name, must be unique (protip: put a year in the election name!)
 
  * BallotEntry
      * (there may be an internal ID, but we don't care)
@@ -93,24 +93,31 @@ For clarity: elections can have many candidates. A candidate could be in multipl
    * Vote ID
    * Election ID
 
- * CandidateVote
+ * Preference
    * (there may be an internal ID here, but we don't care)
    * Vote ID
    * Candidate ID (VoteID+CandiateID must be unique)
-   * Vote - a number, _or nothing_. Does not have *any* restrictions; no formality is to be imposed by the front end or expected by the backend.
+   * Preference - a number, _or nothing_. Does not have *any* restrictions; no formality is to be imposed by the front end or expected by the backend.
 
 For clarity, a vote has many candidate votes, which are basically filled in ballot entries. We could have CandidateVote reference BallotEntry, which would be more in line with normalised design, but I don't do this because that would require the counting software to care about the BallotEntry table, and this way it doesn't. Simple = good.
+
+This arrangement does - in theory - allow you to vote for a candidate that isn't running in the election; we trust the front end not to allow something that brain dead. If we did reference BallotEntry, we'd still need to validate that the ballot entry was actually for the given election. I'm not sure how we could enforce this at the database level, so we both:
+
+ 1. hope for the best that the front end enforces it, *and*
+ 1. make it a design requirement that the backends check this and either do/don't allow write-ins as required.
 
 The following models are *only used by the current front end*; a new front end is not required to implement them, and the backend must not use them. They are written down here because they were written as part of the design process and I see no good reason to remove them. For clarity, elections have many vote codes, and a votecode can authorize voting in mutiple elections - e.g. Pres/VP/Sec/Treas/Committee.
 
  * Votecode
      * Votecode ID
      * Votecode (as described above, unique)
-     * Used? yes/no (It's up the the front end to figure out when a votecode is 'used', especially in the context of it being valid for multiple elections. The current plan is to link it to the session; if you lose your session then too bad, so sad, that's just a risk in online elections. This also allows you to do the digital equivalent of getting your ballot papers and tearing them up, but using a votecode and never submitting a vote.)
 
  * ElectionVotecodes
      * Election ID
-     * Votecode ID
+     * Votecode ID (must be unique together with election ID)
+     * Used? (yes/no)
+
+The use is done at the ElectionVotecode level. Previously I considered having it done at the Votecode level, but it made it hard to ensure that a votecode was only used once per election; basically it required me to trust that users couldn't monkey with their sessions and I wasn't willing to do that.
 
 # Acknowledgements #
 I'd like to gratefully acknowleged the [cssavote2](https://github.com/anucssa/cssavote2), from which I learned a lot. The existence of vote3 is in no way intended as a criticism of cssavote2.

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1></h1>
+
+<ul>
+{% for candidate in object_list %}
+            <li>{{ candidate.name }}
+  <ul>
+    {% for election in candidate.elections.all %}
+    <li>{{ election.name }}</li>
+    {% endfor %}
+        </ul>
+         </li>
+        {% endfor %}
+</ul>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Sat Sep  6 13:31:21 EST 2014 <!-- hhmts end -->
+</body> </html>
