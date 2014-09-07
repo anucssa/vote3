@@ -5,14 +5,16 @@
 
 <body>
 <h1></h1>
-
+{% if elections.count != 0 %}
 <ul>
   {% for election in elections %}
             <li><a href="{% url 'vote3fe:vote' votecode election.id %}">{{ election.name }}</a></li>
         {% endfor %}
 </ul>
-
+{% else %}
+<p>This code is not valid for any more elections.</p>
+{% endif %}
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Sat Sep  6 16:40:15 EST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sun Sep  7 08:29:57 EST 2014 <!-- hhmts end -->
 </body> </html>
