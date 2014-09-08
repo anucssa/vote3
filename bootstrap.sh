@@ -6,7 +6,7 @@ set -euo pipefail
 sudo apt-get update
 sudo apt-get -y upgrade
 
-sudo apt-get -y install tmux postgresql python3-dev libpq-dev python3-pip python-virtualenv
+sudo apt-get -y install tmux postgresql python3-dev libpq-dev python3-pip python-virtualenv haskell-platform libghc-postgresql-simple-dev
 
 cd /vagrant
 
@@ -31,3 +31,8 @@ pip install -r requirements.txt
 cd vote3fe_project
 python manage.py migrate
 python manage.py createcachetable
+
+# backend
+cabal update
+cabal install cabal cabal-install
+

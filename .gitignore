@@ -3,6 +3,9 @@ env/
 __pycache__
 .vagrant
 
+
+dist/
+
 #emacs backups
 .#*
 
