@@ -10,7 +10,7 @@ Then this is the system for you!
 
 # Getting started #
 
-At the moment nothing works. This is for your interest only.
+Everything runs inside a self contained vm, running of Ubuntu.
 
 ```shell
 vagrant up
@@ -22,13 +22,36 @@ cd /vagrant
 cd frontend
 source env/bin/activate
 cd vote3fe_project
-python mange.py createuseruser
-# answer the questions
-<do stuff>
+python mange.py createsuperuser
+# (answer the questions)
 ```
 
-Everything runs inside a self contained vm, running of Ubuntu.
+## Running and using the front end ##
 
+Assuming you've created the superuser and you're still in the virtualenv (you'll see `(env)` before your prompt):
+```shell
+python manage.py runserver 0.0.0.0:8000
+```
+
+Now in your web browser, on the host machine, not in the VM:
+
+ 1. http://localhost:8000/admin - log in, create an election and candidates
+ 1. http://localhost:8000/vote/generate_vote_codes to generate the codes to vote in the election
+ 1. http://localhost:8000/vote/vote_code/CODE to use any of the codes generated - replace CODE. It handles having + signs or slashes fine, so don't worry about that.
+
+## Counting votes ##
+Once you have enough votes, and you know what the ID of the election is (probably 1):
+
+```shell
+cd /vagrant/backend/votecounters
+cabal configure
+cabal run -- ID
+```
+
+(where you replace ID with the election ID)
+
+
+## Notes ##
 By default the program won't be accessible from outside of the host machine (your machine).
 
 You have a number of options to deal with this:
@@ -71,7 +94,7 @@ If you want a different feature set, it's easy to write your own. There's only o
 ## Backend ##
 Once votes are collected, they must be counted. This is done with a backend. A backend can implement any counting system desired - first past the post, mandatory preferential, optional preferential, Hare-Clark(e?), ad nauseum.
 
-For historical reasons*, vote3 is supplied with two Haskell-based counting systems, optional preferential single-member, and optional preferential multi-member.
+For historical reasons*, vote3 is supplied with two Haskell-based counting systems, optional preferential single-member, and optional preferential multi-member. (Currently however, only the optional preferential single-member one has been written.)
 
 These are invoked by the RO from the command line, and print out detailed information about the count, eventually telling you who won, enabling you to welcome your new democratically-elected overlords.
 
@@ -109,11 +132,12 @@ For clarity: elections can have many candidates. A candidate could be in multipl
 
 For clarity, a vote has many candidate votes, which are basically filled in ballot entries. We could have CandidateVote reference BallotEntry, which would be more in line with normalised design, but I don't do this because that would require the counting software to care about the BallotEntry table, and this way it doesn't. Simple = good.
 
-This arrangement does - in theory - allow you to vote for a candidate that isn't running in the election; we trust the front end not to allow something that brain dead. If we did reference BallotEntry, we'd still need to validate that the ballot entry was actually for the given election. I'm not sure how we could enforce this at the database level, so we both:
+This arrangement does allow you to vote for a candidate that isn't running in the election:
 
- 1. hope for the best that the front end enforces it, *and*
- 1. make it a design requirement that the backends check this and either do/don't allow write-ins as required.
+ 1. we allow frontends to prohibit/inhibit this if desired, *and*
+ 1. it's a design requirement that the backends check for this and either do/don't allow write-ins as required. (For example, the optional preferential counter silently discards write-in candidates.)
 
+### Front end ###
 The following models are *only used by the current front end*; a new front end is not required to implement them, and the backend must not use them. They are written down here because they were written as part of the design process and I see no good reason to remove them. For clarity, elections have many vote codes, and a votecode can authorize voting in mutiple elections - e.g. Pres/VP/Sec/Treas/Committee.
 
  * VoteCode
@@ -124,8 +148,6 @@ The following models are *only used by the current front end*; a new front end i
      * Election ID
      * VoteCode ID (must be unique together with election ID)
      * Used? (yes/no)
-
-The use is done at the ElectionVotecode level. Previously I considered having it done at the Votecode level, but it made it hard to ensure that a votecode was only used once per election; basically it required me to trust that users couldn't monkey with their sessions and I wasn't willing to do that.
 
 # Acknowledgements #
 I'd like to gratefully acknowleged the [cssavote2](https://github.com/anucssa/cssavote2), from which I learned a lot. The existence of vote3 is in no way intended as a criticism of cssavote2.
