@@ -35,4 +35,4 @@ python manage.py createcachetable
 # backend
 cabal update
 cabal install cabal cabal-install
-
+echo "PATH=~/.cabal/bin:$PATH" >> ~/.bashrc 
