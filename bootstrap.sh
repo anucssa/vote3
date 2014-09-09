@@ -33,6 +33,7 @@ python manage.py migrate
 python manage.py createcachetable
 
 # backend
+HOME=/home/vagrant
 cabal update
 cabal install cabal cabal-install
 echo "PATH=~/.cabal/bin:$PATH" >> ~/.bashrc 

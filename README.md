@@ -50,6 +50,11 @@ cabal run -- ID
 
 (where you replace ID with the election ID)
 
+Does cabal complain about Hackage and AGPL and not know what run is? Do this:
+```cabal update
+cabal install cabal cabal-install
+```
+You may then need to use `~/.cabal/bin/cabal`.
 
 ## Notes ##
 By default the program won't be accessible from outside of the host machine (your machine).
