@@ -1,0 +1,45 @@
+Vote3 Voting System - Audit Trail
+=================================
+
+A vote has been recorded in the Vote3 system.
+
+The vote was recorded for election {{ vote.election.id }}: {{ vote.election.name }}.
+
+{% if strict_secrecy %}
+Because strict secrecy has been set, the vote code used has
+deliberately not been recorded.
+{% else %}
+The vote code used was: {{ vote_code }}
+{% endif %}
+
+To aid verification that the vote recorded matches the voter's
+intention, a list of POST variables submitted is recorded below:
+
+{% for k, v in post.items %}{{ k }}: {{ v }}
+{% endfor %}
+
+Based on the submitted variables, the recorded vote was:
+{% for p in vote.preference_set.all %}
+{{ p.candidate.name }} ({{ p.candidate.id }}): {{ p.preference }}
+{% endfor %}
+
+If you are the voter and this does not match your intention, then
+something is wrong. Please alert the returning officer.
+
+====
+
+This message should be GPG signed with the Vote3 voting system GPG
+key. If it is not signed, or the signature does not verify, then the
+integrity of the voting system may have been compromised.
+
+Vote3 makes use of a hash chain to ensure the insertion, deletion or
+modification of messages can be detected. 
+
+The hash of the previous message is:
+{{ hash }}
+
+The next message in the audit trail must contain a SHA-384 hash of
+this message (including the signature), encoded as UTF-8. If it does
+not contain a hash, or the hash does not match the hash of this
+message, then the integrity of the voting system may have been
+compromised.

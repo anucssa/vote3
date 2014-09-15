@@ -95,3 +95,17 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
+
+# GPG key for signing messages
+# Todo break this out into local settings, generate automatically
+VOTE3_SIGNING_KEY = '0F9C3C22'
+
+# Do we want strict secrecy in the audit trail?
+#
+# Strict -> don't store vote codes -> makes it impossible to prove
+# your vote, but harder to verify that votes were authorised.
+#
+# Loose -> vote codes are stored -> you can prove your vote (not
+# strictly a secret ballot), but harder for e.g. adminstrator to forge
+# a vote.
+VOTE3_STRICT_SECRECY = False

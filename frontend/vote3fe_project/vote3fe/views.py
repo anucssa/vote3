@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
 from annoying.functions import get_object_or_None
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect, HttpResponse, \
                         HttpResponseForbidden
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.db import transaction
 from ratelimit.decorators import ratelimit
 from .models import Election, Candidate, VoteCode, ElectionVoteCode, Vote, \
-                    Preference
+                    Preference, AuditEntry
 from .forms import GenerateVoteCodesForm
 
 
@@ -18,6 +21,14 @@ class ElectionList(ListView):
 
 class CandidateList(ListView):
     model = Candidate
+
+
+class AuditEntryList(ListView):
+    model = AuditEntry
+
+
+class AuditEntryDetail(DetailView):
+    model = AuditEntry
 
 
 # the way this returns data to the user is to return the first and last
@@ -71,7 +82,7 @@ class VoteCodesList(ListView):
 @ratelimit(block=True, method=None)
 def vote_code(request, votecode_param):    
     votecode = get_object_or_404(VoteCode, vote_code=votecode_param)
-    
+
     elections = votecode.elections.filter(electionvotecode__used=False)
 
     return render(request, 'vote3fe/vote_code.html',
@@ -79,6 +90,7 @@ def vote_code(request, votecode_param):
 
 
 # there's probably a better, more idiomatic way to do this. Oh well.
+@transaction.atomic
 def vote(request, votecode_param, election):
 
     votecode = get_object_or_404(VoteCode, vote_code=votecode_param)
@@ -94,7 +106,7 @@ def vote(request, votecode_param, election):
         return render(request, 'vote3fe/vote.html',
                       {'election': election, 'candidates': candidates,
                        'votecode_param': votecode_param})
-    
+
     elif request.method == 'POST':
         # mark the votecode as used, preventing multiple submissions
         # running concurrently
@@ -107,7 +119,7 @@ def vote(request, votecode_param, election):
         for x in request.POST:
             if x == 'csrfmiddlewaretoken':
                 continue
-            
+
             parts = x.split('-')
             if len(parts) != 2 or parts[0] != 'candidate':
                 continue
@@ -124,8 +136,17 @@ def vote(request, votecode_param, election):
                 pref.save()
             except Exception:
                 pass
-        
 
-    return HttpResponseRedirect(reverse('vote3fe:vote_code',
-                                        kwargs={'votecode_param':
-                                                votecode_param}))
+        # create an audit trail entry
+        entry = render_to_string('vote3fe/audit/vote.txt',
+                                 { 'post': request.POST,
+                                   'vote': vote,
+                                   'strict_secrecy': \
+                                     settings.VOTE3_STRICT_SECRECY,
+                                   'vote_code': votecode_param,
+                                   'hash': AuditEntry.next_hash(),
+                                 })
+        a = AuditEntry.objects.create(entry=entry)
+
+    return HttpResponseRedirect(reverse('vote3fe:audit_entry',
+                                        kwargs={'pk': a.pk}))
