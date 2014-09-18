@@ -42,18 +42,18 @@ Now in your web browser, on the host machine, not in the VM:
 ## Counting votes ##
 Once you have enough votes, and you know what the ID of the election is (probably 1):
 
-```shell
-cd /vagrant/backend/votecounters
-cabal configure
-cabal run -- ID
-```
+    shell
+    cd /vagrant/backend/votecounters
+    cabal configure
+    cabal run -- ID
 
 (where you replace ID with the election ID)
 
 Does cabal complain about Hackage and AGPL and not know what run is? Do this:
-```cabal update
-cabal install cabal cabal-install
-```
+
+    cabal update
+    cabal install cabal cabal-install
+
 You may then need to use `~/.cabal/bin/cabal`.
 
 ## Notes ##
@@ -113,7 +113,7 @@ A rough outline to the schema is as follows.
      * Election Name, must be unique
      * Election Notes (information that is displayed to voters. Does *not* enforce anything internally.)
 
- * Candiate
+ * Candidate
      * Candidate ID
      * Candidate Name, must be unique (protip: put a year in the election name!)
 
