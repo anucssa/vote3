@@ -146,7 +146,7 @@ This is the entry immediately following (so you can verify that the SHA384 of th
     modification of messages can be detected. 
     
     The hash of the previous message is:
-    41446dc39bc5e43527c3abec1534b2f2496d23000e73fdfc156ef1da0ca8fdca439b8ec91977954b    a091873beea4116d
+    41446dc39bc5e43527c3abec1534b2f2496d23000e73fdfc156ef1da0ca8fdca439b8ec91977954ba091873beea4116d
     
     The next message in the audit trail must contain a SHA-384 hash of
     this message (including the signature), encoded as UTF-8. If it does
@@ -215,7 +215,7 @@ And here's a random vote:
     modification of messages can be detected. 
     
     The hash of the previous message is:
-    790c6c9e0439395048056982d08829faf58f66c03d66b41bc8ba805fa2acff7e003ab846637d3fdc    df883aa90f2942d7
+    790c6c9e0439395048056982d08829faf58f66c03d66b41bc8ba805fa2acff7e003ab846637d3fdcdf883aa90f2942d7
     
     The next message in the audit trail must contain a SHA-384 hash of
     this message (including the signature), encoded as UTF-8. If it does
@@ -249,7 +249,7 @@ Here's the final/count/capstone entry:
     audit entries, not including this one.
     
     The hash of the final message is:
-    042483bbf38e36f2ed48839c008e4a04920b289ca2c27d9509475c27068a49fdfe0680e34b548fa    1359f37be27fdadb9
+    042483bbf38e36f2ed48839c008e4a04920b289ca2c27d9509475c27068a49fdfe0680e34b548fa1359f37be27fdadb9
     
     ====
     
