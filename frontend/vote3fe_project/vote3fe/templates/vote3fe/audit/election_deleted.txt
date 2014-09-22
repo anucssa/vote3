@@ -1,0 +1,38 @@
+Vote3 Voting System - Audit Trail
+=================================
+
+An election has been deleted from the the Vote3 system. 
+
+The election was:
+
+ID: {{ election.id }}
+Name: {{ election.name }}
+
+Notes
+=====
+
+{{election.notes}}
+
+Ballot
+======
+{% for be in election.ballotentry_set.all %}
+ * #{{be.id}} - Position {{ be.position }}: Candidate {{be.candidate.id}} - {{be.candidate.name}}
+{% endfor %}
+
+====
+
+This message should be GPG signed with the Vote3 voting system GPG
+key. If it is not signed, or the signature does not verify, then the
+integrity of the voting system may have been compromised.
+
+Vote3 makes use of a hash chain to ensure the insertion, deletion or
+modification of messages can be detected. 
+
+The hash of the previous message is:
+{{ hash }}
+
+The next message in the audit trail must contain a SHA-384 hash of
+this message (including the signature), encoded as UTF-8. If it does
+not contain a hash, or the hash does not match the hash of this
+message, then the integrity of the voting system may have been
+compromised.
