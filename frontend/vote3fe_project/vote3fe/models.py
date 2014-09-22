@@ -129,17 +129,13 @@ class AuditEntry(models.Model):
     def next_hash():
         return AuditEntry.objects.last().hash()
 
-    def save(self, *args, **kwargs):
-        # sign the message!
-        # this is *deliberately* not idempotent. There's no reason a
-        # audit entry should be resaved.
-
+    def sign(msg):
         ctx = gpgme.Context()
         key = ctx.get_key(settings.VOTE3_SIGNING_KEY)
         ctx.armor = True
         ctx.signers = [key]
 
-        plaintext = BytesIO(self.entry.encode('UTF-8'))
+        plaintext = BytesIO(msg.encode('UTF-8'))
         signature = BytesIO()
 
         ctx.sign(plaintext, signature, gpgme.SIG_MODE_CLEAR)
@@ -147,7 +143,15 @@ class AuditEntry(models.Model):
         signature.seek(0)
 
         signedentry = signature.read().decode('UTF-8')
-        self.entry = signedentry
+
+        return signedentry
+    
+    def save(self, *args, **kwargs):
+        # this is *deliberately* not idempotent. There's no reason a
+        # audit entry should be resaved.
+
+        
+        self.entry = AuditEnty.sign(self.entry)
 
         super(AuditEntry, self).save(*args, **kwargs)
 

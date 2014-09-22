@@ -1,0 +1,17 @@
+Vote3 Voting System - Audit Trail
+=================================
+
+This is the count entry for the Vote3 voting system.
+
+I assert that there are:
+{{ count }}
+audit entries, not including this one.
+
+The hash of the final message is:
+{{ hash }}
+
+====
+
+This message should be GPG signed with the Vote3 voting system GPG
+key. If it is not signed, or the signature does not verify, then the
+integrity of the voting system may have been compromised.

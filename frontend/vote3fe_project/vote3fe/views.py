@@ -31,6 +31,12 @@ class AuditEntryDetail(DetailView):
     model = AuditEntry
 
 
+class AuditEntryRawDetail(DetailView):
+    model = AuditEntry
+    content_type = 'text/plain'
+    template_name = 'vote3fe/auditentry_detail_raw.txt'
+
+
 # the way this returns data to the user is to return the first and last
 # id's of the voting codes. This could potentially go awry if multiple requests
 # are being executed simultaneously. We /may/ be able to get around this by
@@ -150,3 +156,19 @@ def vote(request, votecode_param, election):
 
     return HttpResponseRedirect(reverse('vote3fe:audit_entry',
                                         kwargs={'pk': a.pk}))
+
+
+def audit_entry_count(request, raw=False):
+    entry = render_to_string('vote3fe/audit/count.txt',
+                             { 'count': AuditEntry.objects.count(),
+                               'hash': AuditEntry.next_hash() })
+
+    signedentry = AuditEntry.sign(entry)
+
+    if raw:
+        return HttpResponse(signedentry, content_type = 'text/plain')
+
+    else:
+        return render(request,
+                      'vote3fe/auditentry_detail.html',
+                      { 'object': {'entry': signedentry}})

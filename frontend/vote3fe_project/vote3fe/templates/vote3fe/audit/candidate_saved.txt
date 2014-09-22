@@ -2,7 +2,7 @@ Vote3 Voting System - Audit Trail
 =================================
 
 A candidate has been saved in the Vote3 system. This may be a new
-candidate, a modification to an existing candidate.
+candidate or a modification to an existing candidate.
 
 ID: {{ candidate.id }}
 Name: {{ candidate.name }}

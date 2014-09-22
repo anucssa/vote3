@@ -15,4 +15,10 @@ urlpatterns = [
     url(r'^audit/$', views.AuditEntryList.as_view()),
     url(r'^audit/(?P<pk>[0-9]+)/$', views.AuditEntryDetail.as_view(),
         name='audit_entry'),
+    url(r'^audit/(?P<pk>[0-9]+)/raw/$', views.AuditEntryRawDetail.as_view(),
+        name='audit_entry_raw'),
+    url(r'^audit/count/$', views.audit_entry_count, {'raw': False},
+        name='audit_count'),
+    url(r'^audit/count/raw/$', views.audit_entry_count, {'raw': True},
+        name='audit_count_raw'),
 ]
