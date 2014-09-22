@@ -56,37 +56,32 @@ We consider an attacker with active MITM (monkey in the middle) capabilities, an
 
 Consider adding an entry. Here we assume the attacker notices that the audit trail is being downloaded, and replaces the true audit trail with an audit trail of their own:
 
- * Adding an entry at the end is the easiest. An attacker calculates the SHA384 of the previous message, then writes their own message. However, they have to forge a PGP signature from the Vote3 signing key.
+ * Adding an entry at the end is the easiest. An attacker calculates the SHA384 of the previous message, then writes their own message. They have to forge the signature on both that message and the count message.
  * Adding a message mid-stream is harder. There are two possibilities:
      * Create an arbitrary message and sign it. This will cause the hash to fail in the subsequent message, so every subsequent message will need to be modified and resigned. This means that the attacker must forge multiple PGP signatures.
      * Create a message such that it matches the expected hash. This requires a pre-image attack on SHA-384 and the forging of a signature.
 
 Consider modifying an entry:
+
  * The attacker must forge a PGP signature.
- * If modifying a midstream message, the attacker must either:
+ * The attacker must also either:
      * modify every subsequent message and forge their signatures too, or
      * find a collision on the SHA-384 hash such that their modified message has the same hash as the original.
 
 Consider removing an entry:
- * The final entry can be removed undetected. (This is why closing an election before counting it is important, as that provides an 'election closed' message that can be checked for, and which has the hash of the final vote.)
 
- * If you add an entry mid stream, 
+* Truncating the stream is actually possible. The attacker can simply keep a copy of an old capstone message and provide it; thus tricking the reciever into believing there are any number of messages less than the complete number of messages. Manual verification that an election is opened and closed within the audit stream is required.
 
- * If you try to hide or omit an entry from the middle of the audit trail, it will probably be detected: Say you delete entry 7 by moving all the other entries forward, so 8 becomes 7, 9 becomes 8, etc.
-     * The hash on 8 will need to be changed, then the hash on 9, etc.
-     * Therefore entry 8 and following will all need to be resigned - the attacker needs the key
-     * Say the attacker has the key. They will suceed in making an undetected change only if no-one with an audit trail message that comes after the change (e.g. the voter for entry 9) can come forward and show that the audit trail has changed and their hash is no longer part of the chain.
-         * This is obviously not foolproof. I'm thinking through better ways to do this.
-
- * 
-   
+* Removing an entry midstream is harder. The subsequent messages have to be rewritten and resigned, and a new capstone entry has to be forged.
 
 
 ### Things that could one day be proven but are not
 
+ * that the content of the messages is as expected - e.g. the election is not changed midway through, and is opened and closed as expected.
+ * etc.
 
 ### Things that will never be proven
 This is not a comprehensive list.
 
  * That the RO didn't keep votecodes to him/herself and use them to vote in the election.
- * That the audit trail hasn't been truncated. (Will be mitigated by the presence of an 'voting closed' entry in the future.)
+ * (With the current configuration) That the adminstrator isn't doing anything dodgy.

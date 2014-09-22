@@ -4,11 +4,16 @@ So you want to run an election?
 
  * With some horribly complicated voting system like optional preferential
  * But in near real time
- * And you're happy to take on the myriad risks involved in online voting?
+ * You want a voter-verifiable audit trail
+ * But your happy to take on the myriad other risks involved in online voting?
 
 Then this is the system for you!
 
-# Getting started #
+# Are you trying to verify an election? #
+
+See [the verify-audit-trail README](utils/verify-audit-trail/README.md), not this document.
+
+# Getting started running an election #
 
 Everything runs inside a self contained vm, running of Ubuntu.
 
@@ -24,6 +29,12 @@ source env/bin/activate
 cd vote3fe_project
 python mange.py createsuperuser
 # (answer the questions)
+# Create a signing key
+gpg --gen-key
+# suggested parameters: 1, 4096, 0, y, Vote3 signing key, your email address, no comment, O
+# then edit vote3fe_project/settings.py and change VOTE3_SIGNING_KEY id.
+# sign the generated key with your actual key and distribute it to voters.
+python manage.py init_audit_trail
 ```
 
 ## Running and using the front end ##
@@ -55,6 +66,17 @@ Does cabal complain about Hackage and AGPL and not know what run is? Do this:
 cabal install cabal cabal-install
 ```
 You may then need to use `~/.cabal/bin/cabal`.
+
+
+## What's this audit trail of which you speak? ##
+
+The audit trail is a feature of the supplied front end that provides a complete log of all actions taken by the system. (It doesn't necessarily have to be implemented by other front ends, although it's probably a good idea.)
+
+It's accessible at http://localhost:8000/vote/audit
+
+It is human readable and can additionally be automatically verified by the verifier in utils/verify-audit-trail
+
+More details can be found in the verifier's [README](utils/verify-audit-trail/README.md).
 
 ## Notes ##
 By default the program won't be accessible from outside of the host machine (your machine).
