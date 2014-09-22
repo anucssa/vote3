@@ -17,32 +17,31 @@ See [the verify-audit-trail README](utils/verify-audit-trail/README.md), not thi
 
 Everything runs inside a self contained vm, running of Ubuntu.
 
-```shell
-vagrant up
-# this will provision all the necessary dependencies, yay.
-# it takes a while. Have a coffee or 3.
-vagrant ssh
-cd /vagrant
-# set yourself up a superuser
-cd frontend
-source env/bin/activate
-cd vote3fe_project
-python mange.py createsuperuser
-# (answer the questions)
-# Create a signing key
-gpg --gen-key
-# suggested parameters: 1, 4096, 0, y, Vote3 signing key, your email address, no comment, O
-# then edit vote3fe_project/settings.py and change VOTE3_SIGNING_KEY id.
-# sign the generated key with your actual key and distribute it to voters.
-python manage.py init_audit_trail
-```
+    shell
+    vagrant up
+    # this will provision all the necessary dependencies, yay.
+    # it takes a while. Have a coffee or 3.
+    vagrant ssh
+    cd /vagrant
+    # set yourself up a superuser
+    cd frontend
+    source env/bin/activate
+    cd vote3fe_project
+    python mange.py createsuperuser
+    # (answer the questions)
+    # Create a signing key
+    gpg --gen-key
+    # suggested parameters: 1, 4096, 0, y, Vote3 signing key, your email address, no comment, O
+    # then edit vote3fe_project/settings.py and change VOTE3_SIGNING_KEY id.
+    # sign the generated key with your actual key and distribute it to voters.
+    python manage.py init_audit_trail
 
 ## Running and using the front end ##
 
 Assuming you've created the superuser and you're still in the virtualenv (you'll see `(env)` before your prompt):
-```shell
-python manage.py runserver 0.0.0.0:8000
-```
+
+    shell
+    python manage.py runserver 0.0.0.0:8000
 
 Now in your web browser, on the host machine, not in the VM:
 

@@ -18,7 +18,7 @@ It will attempt to use the system's GPG. If GPG isn't found (maybe you are on Wi
 
 To run it, go:
 
-`vat.py http://server/vote/audit`
+`python vat.py http://server/vote/audit`
 
 where `server` is the address of the server running the election.
 
