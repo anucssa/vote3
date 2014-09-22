@@ -106,6 +106,10 @@ def vote(request, votecode_param, election):
     if not election in votecode.elections.filter(electionvotecode__used=False):
         return HttpResponseForbidden('This is not an unused voting code for this election.')
 
+    # verify that the election is open:
+    if not election.isOpen:
+        return HttpResponseForbidden('This election is closed for voting.')
+    
     if request.method == 'GET':
         # get the candidates in ballot order:
         candidates = election.candidates.order_by('ballotentry__position')

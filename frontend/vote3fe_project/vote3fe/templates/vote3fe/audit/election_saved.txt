@@ -10,6 +10,7 @@ The complete state of the election is printed below.
 
 ID: {{ election.id }}
 Name: {{ election.name }}
+Is Open: {{ election.isOpen }}
 
 Notes
 =====

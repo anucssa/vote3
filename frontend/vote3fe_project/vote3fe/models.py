@@ -32,6 +32,7 @@ class Candidate(models.Model):
 
 class Election(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    isOpen = models.BooleanField(default=False)
     notes = models.CharField(max_length=3000, blank=True)
     candidates = models.ManyToManyField(Candidate, through='BallotEntry')
     def __str__(self):
@@ -151,7 +152,7 @@ class AuditEntry(models.Model):
         # audit entry should be resaved.
 
         
-        self.entry = AuditEnty.sign(self.entry)
+        self.entry = AuditEntry.sign(self.entry)
 
         super(AuditEntry, self).save(*args, **kwargs)
 

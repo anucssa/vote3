@@ -46,7 +46,7 @@ python manage.py runserver 0.0.0.0:8000
 
 Now in your web browser, on the host machine, not in the VM:
 
- 1. http://localhost:8000/admin - log in, create an election and candidates
+ 1. http://localhost:8000/admin - log in, create an election and candidates. Don't forget to open the election before voting and close it afterwards.
  1. http://localhost:8000/vote/generate_vote_codes to generate the codes to vote in the election
  1. http://localhost:8000/vote/vote_code/CODE to use any of the codes generated - replace CODE. It handles having + signs or slashes fine, so don't worry about that.
 
