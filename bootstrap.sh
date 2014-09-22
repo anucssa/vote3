@@ -6,7 +6,7 @@ set -euo pipefail
 sudo apt-get update
 sudo apt-get -y upgrade
 
-sudo apt-get -y install tmux postgresql python3-dev libpq-dev python3-pip python-virtualenv haskell-platform libghc-postgresql-simple-dev
+sudo apt-get -y install tmux postgresql python3-dev libpq-dev python3-pip python-virtualenv haskell-platform libghc-postgresql-simple-dev libgpgme11-dev
 
 cd /vagrant
 
