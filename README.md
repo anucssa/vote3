@@ -5,7 +5,7 @@ So you want to run an election?
  * With some horribly complicated voting system like optional preferential
  * But in near real time
  * You want a voter-verifiable audit trail
- * But your happy to take on the myriad other risks involved in online voting?
+ * But you're happy to take on the myriad other risks involved in online voting?
 
 Then this is the system for you!
 
